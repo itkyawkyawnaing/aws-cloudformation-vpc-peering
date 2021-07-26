@@ -1,4 +1,4 @@
-# AWS VPC Peering with AWS CloudFormation Multi-stack
+# AWS VPC Peering with CloudFormation Templates
 
 This lab is focusing on AWS CloudFormation (CFN) cross-stack scenarios design and to get familiar with AWS CloudFormation Templates.
 
@@ -30,7 +30,7 @@ Follow the steps to completed the tasks.
 
 ## 1. Clone the git repository
 ```bash
-git clone https://github.com/
+git clone https://github.com/itkyawkyawnaing/aws-cloudformation-vpc-peering.git
 ```
 This will clone my git respository to your local directory.
 
@@ -88,7 +88,7 @@ SSH into instance from VPC1 and VPC2 with your key pair. The instances should ab
 ```bash
 aws cloudformation create-stack --stack-name peering --template-body file://peering.yaml
 ```
-![header image](img/peering.png)
+![header image](img/peering.jpeg)
 
 ## Congratulation !!! Should able to ping from VPC1 instance to VPC2 instance like below the picture
 
