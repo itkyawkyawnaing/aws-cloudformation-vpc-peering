@@ -1,0 +1,134 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  barnyarMasterVpc1:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: '192.168.0.0/16'
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: 'default'
+      Tags: 
+        - Key: 'Name'
+          Value: 'barnyar-master-vpc1'
+  vpc1publicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: 'ap-southeast-1a'
+      CidrBlock: '192.168.1.0/24'
+      MapPublicIpOnLaunch: true
+      Tags: 
+        - Key: 'Name'
+          Value: 'barnyarvpc1-public-subnet1'
+      VpcId:
+        !Ref barnyarMasterVpc1
+  vpc1publicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: 'ap-southeast-1b'
+      CidrBlock: '192.168.2.0/24'
+      MapPublicIpOnLaunch: true
+      Tags: 
+        - Key: 'Name'
+          Value: 'barnyarvpc1-public-subnet2'
+      VpcId:
+        !Ref barnyarMasterVpc1
+  vpc1publicSubnet3:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: 'ap-southeast-1c'
+      CidrBlock: '192.168.3.0/24'
+      MapPublicIpOnLaunch: true
+      Tags: 
+        - Key: 'Name'
+          Value: 'barnyarvpc1-public-subnet3'
+      VpcId:
+        !Ref barnyarMasterVpc1
+  vpc1routeTableForPublicSubnets:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      Tags: 
+        - Key: 'Name'
+          Value: 'vpc1-route-table-publicSubnets'
+      VpcId:
+        !Ref barnyarMasterVpc1
+  # Associate publicSubnet1 to RouteTable
+  publicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        !Ref vpc1publicSubnet1
+      RouteTableId:
+        !Ref vpc1routeTableForPublicSubnets
+  # Associate publicSubnet1 to RouteTable
+  publicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        !Ref vpc1publicSubnet2
+      RouteTableId:
+        !Ref vpc1routeTableForPublicSubnets
+  # Associate publicSubnet1 to RouteTable
+  publicSubnet3RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        !Ref vpc1publicSubnet3
+      RouteTableId:
+        !Ref vpc1routeTableForPublicSubnets
+  vpc1IGW:
+    Type: AWS::EC2::InternetGateway
+    Properties: 
+      Tags: 
+        - Key: 'Name'
+          Value: 'vpc1 igw'
+  attachVPCAndIGW:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties: 
+      InternetGatewayId:
+        !Ref vpc1IGW
+      VpcId:
+        !Ref barnyarMasterVpc1
+  defaultRouteToIGW:
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: '0.0.0.0/0'
+      GatewayId:
+        !Ref vpc1IGW
+      RouteTableId:
+        !Ref vpc1routeTableForPublicSubnets
+Outputs:
+  barnyarMasterVpc1ID: #logicalID
+    Description: 'barnyar Master VPC1 ID'
+    Value:
+      !Ref barnyarMasterVpc1 # the vaule of export is here
+    Export:
+      Name:
+        !Sub ${AWS::StackName}-VPCID # the name of infra-stack export
+  vpc1publicSubnet1ID: #logicalID
+    Description: 'gritworks Master VPC1 publicSubnet1 ID'
+    Value:
+      !Ref vpc1publicSubnet1 # the vaule of export is here
+    Export:
+      Name:
+        !Sub ${AWS::StackName}-publicSubnet1ID # the name of infra-stack export
+  vpc1publicSubnet2ID: #logicalID
+    Description: 'barnyar Master VPC publicSubnet2 ID'
+    Value:
+      !Ref vpc1publicSubnet2 # the vaule of export is here
+    Export:
+      Name:
+        !Sub ${AWS::StackName}-publicSubnet2ID # the name of infra-stack export
+  vpc1publicSubnet3ID: #logicalID
+    Description: 'barnyar Master VPC publicSubnet3 ID'
+    Value:
+      !Ref vpc1publicSubnet3 # the vaule of export is here
+    Export:
+      Name:
+        !Sub ${AWS::StackName}-publicSubnet3ID # the name of infra-stack export
+  vpc1routeTableForPublicSubnets: #logicalID
+    Description: 'barnyar routeTable ID'
+    Value:
+      !Ref vpc1routeTableForPublicSubnets # the vaule of export is here
+    Export:
+      Name:
+        !Sub ${AWS::StackName}-routeTableID # the name of infra-stack export

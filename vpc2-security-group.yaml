@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  vpc2StackName: #ParameterKey
+    Description: 'Name of your VPC2 CFN Stack'
+    Type: String
+    Default: 'vpc2'
+Resources: 
+  vpc2customSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: 'barnyar-master vpc2 Custom Security Group'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: '0.0.0.0/0'
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: '0.0.0.0/0'
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: '0.0.0.0/0'
+        - IpProtocol: icmp
+          FromPort: -1
+          ToPort: -1
+          CidrIp: '0.0.0.0/0'
+      VpcId:
+        Fn::ImportValue:
+          !Sub ${vpc2StackName}-VPCID 
+      Tags:
+        - Key: 'Name'
+          Value: 'barnyar Master vpc2 Security Group'
+Outputs:
+  vpc2customSecurityGroupID: #logicalID
+    Description: 'barnyar Master vpc2 SecurityGroup ID'
+    Value:
+      !Ref vpc2customSecurityGroup # the vaule of export is here
+    Export:
+      Name:
+        !Sub ${AWS::StackName}-vpc2SecurityGroupID # the name of infra-stack export

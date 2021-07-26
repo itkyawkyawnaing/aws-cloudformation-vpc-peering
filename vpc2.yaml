@@ -1,0 +1,134 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  barnyarMasterVpc2:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: '172.16.0.0/16'
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: 'default'
+      Tags: 
+        - Key: 'Name'
+          Value: 'barnyar-master-vpc2'
+  vpc2publicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: 'ap-southeast-1a'
+      CidrBlock: '172.16.1.0/24'
+      MapPublicIpOnLaunch: true
+      Tags: 
+        - Key: 'Name'
+          Value: 'barnyarvpc2-public-subnet1'
+      VpcId:
+        !Ref barnyarMasterVpc2
+  vpc2publicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: 'ap-southeast-1b'
+      CidrBlock: '172.16.2.0/24'
+      MapPublicIpOnLaunch: true
+      Tags: 
+        - Key: 'Name'
+          Value: 'barnyarvpc2-public-subnet2'
+      VpcId:
+        !Ref barnyarMasterVpc2
+  vpc2publicSubnet3:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: 'ap-southeast-1c'
+      CidrBlock: '172.16.3.0/24'
+      MapPublicIpOnLaunch: true
+      Tags: 
+        - Key: 'Name'
+          Value: 'barnyarvpc2-public-subnet3'
+      VpcId:
+        !Ref barnyarMasterVpc2
+  vpc2routeTableForPublicSubnets:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      Tags: 
+        - Key: 'Name'
+          Value: 'vpc2-route-table-publicSubnets'
+      VpcId:
+        !Ref barnyarMasterVpc2
+  # Associate publicSubnet1 to RouteTable
+  publicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        !Ref vpc2publicSubnet1
+      RouteTableId:
+        !Ref vpc2routeTableForPublicSubnets
+  # Associate publicSubnet1 to RouteTable
+  publicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        !Ref vpc2publicSubnet2
+      RouteTableId:
+        !Ref vpc2routeTableForPublicSubnets
+  # Associate publicSubnet1 to RouteTable
+  publicSubnet3RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        !Ref vpc2publicSubnet3
+      RouteTableId:
+        !Ref vpc2routeTableForPublicSubnets
+  vpc2IGW:
+    Type: AWS::EC2::InternetGateway
+    Properties: 
+      Tags: 
+        - Key: 'Name'
+          Value: 'vpc2 igw'
+  attachVPCAndIGW:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties: 
+      InternetGatewayId:
+        !Ref vpc2IGW
+      VpcId:
+        !Ref barnyarMasterVpc2
+  defaultRouteToIGW:
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: '0.0.0.0/0'
+      GatewayId:
+        !Ref vpc2IGW
+      RouteTableId:
+        !Ref vpc2routeTableForPublicSubnets
+Outputs:
+  barnyarMasterVpc2ID: #logicalID
+    Description: 'barnyar Master vpc2 ID'
+    Value:
+      !Ref barnyarMasterVpc2 # the vaule of export is here
+    Export:
+      Name:
+        !Sub ${AWS::StackName}-VPCID # the name of infra-stack export
+  vpc2publicSubnet1ID: #logicalID
+    Description: 'barnyar Master vpc2 publicSubnet1 ID'
+    Value:
+      !Ref vpc2publicSubnet2 # the vaule of export is here
+    Export:
+      Name:
+        !Sub ${AWS::StackName}-publicSubnet1ID # the name of infra-stack export
+  vpc2publicSubnet2ID: #logicalID
+    Description: 'barnyar Master VPC publicSubnet2 ID'
+    Value:
+      !Ref vpc2publicSubnet2 # the vaule of export is here
+    Export:
+      Name:
+        !Sub ${AWS::StackName}-publicSubnet2ID # the name of infra-stack export
+  vpc2publicSubnet3ID: #logicalID
+    Description: 'barnyar Master VPC publicSubnet3 ID'
+    Value:
+      !Ref vpc2publicSubnet3 # the vaule of export is here
+    Export:
+      Name:
+        !Sub ${AWS::StackName}-publicSubnet3ID # the name of infra-stack export
+  vpc2routeTableForPublicSubnets: #logicalID
+    Description: 'barnyar routeTable ID'
+    Value:
+      !Ref vpc2routeTableForPublicSubnets # the vaule of export is here
+    Export:
+      Name:
+        !Sub ${AWS::StackName}-routeTableID # the name of infra-stack export

@@ -1,0 +1,44 @@
+# import VPN Stacks
+# Create Peering Stacks
+# Add route
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  vpc1StackName: #ParameterKey
+    Description: 'Name of your VPC1 CFN Stack'
+    Type: String
+    Default: 'vpc1'
+  vpc2StackName: #ParameterKey
+    Description: 'Name of your VPC2 CFN Stack'
+    Type: String
+    Default: 'vpc2'
+Resources:
+  cloudlabVPCPeeringConnection:
+    Type: 'AWS::EC2::VPCPeeringConnection'
+    Properties:
+      VpcId:
+        Fn::ImportValue:
+          !Sub "${vpc1StackName}-VPCID"
+      PeerVpcId:
+        Fn::ImportValue:
+          !Sub "${vpc2StackName}-VPCID"
+      Tags:
+        - Key: "Name"
+          Value: "vpc1 & vpc2 peering"
+# Add Route To VPC2
+  vpc1peeringtRouteTovpc2:
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: '172.16.0.0/16'
+      VpcPeeringConnectionId: !Ref cloudlabVPCPeeringConnection
+      RouteTableId:
+        Fn::ImportValue:
+          !Sub "${vpc1StackName}-routeTableID"
+# Add Route To VPC1
+  vpc2peeringtRouteTovpc1:
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: '192.168.0.0/16'
+      VpcPeeringConnectionId: !Ref cloudlabVPCPeeringConnection
+      RouteTableId:
+        Fn::ImportValue:
+          !Sub "${vpc2StackName}-routeTableID"

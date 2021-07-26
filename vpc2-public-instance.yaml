@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  vpc2securityGroupStackName: #ParameterKey
+    Description: 'Name of your vpc1 Security Group CFN Stack'
+    Type: String
+    Default: 'vpc2-security-group'
+  vpc2StackName: #ParameterKey
+    Description: 'Name of your vpc2 CFN Stack'
+    Type: String
+    Default: 'vpc2'
+Resources: 
+  vpc2publicInstance1: #Instance 1
+    Type: AWS::EC2::Instance
+    Properties: 
+      ImageId: ami-0d058fe428540cd89 #ubuntu 20.04 LTS
+      InstanceType: t2.micro
+      SubnetId:
+        Fn::ImportValue:
+          !Sub ${vpc2StackName}-publicSubnet1ID
+      KeyName: bnkey
+      Tags: 
+        - Key: "Name"
+          Value: "vpc2-public-instance-1"
+      SecurityGroupIds:
+        - !ImportValue
+            Fn::Sub: ${vpc2securityGroupStackName}-vpc2SecurityGroupID
+  # vpc2publicInstance2: #Instance 2
+  #   Type: AWS::EC2::Instance
+  #   Properties: 
+  #     ImageId: ami-0d058fe428540cd89 #ubuntu 20.04 LTS
+  #     InstanceType: t2.micro
+  #     SubnetId:
+  #       Fn::ImportValue:
+  #         !Sub ${vpc2StackName}-publicSubnet2ID
+  #     KeyName: bnkey
+  #     Tags: 
+  #       - Key: "Name"
+  #         Value: "vpc2-public-instance-2"
+  #     SecurityGroupIds:
+  #       - !ImportValue
+  #           Fn::Sub: ${vpc2securityGroupStackName}-vpc2SecurityGroupID
+  # vpc2publicInstance1: #Instance 3
+  #   Type: AWS::EC2::Instance
+  #   Properties: 
+  #     ImageId: ami-0d058fe428540cd89 #ubuntu 20.04 LTS
+  #     InstanceType: t2.micro
+  #     SubnetId:
+  #       Fn::ImportValue:
+  #         !Sub ${vpc2StackName}-publicSubnet3ID
+  #     KeyName: bnkey
+  #     Tags: 
+  #       - Key: "Name"
+  #         Value: "vpc2-public-instance-3"
+  #     SecurityGroupIds:
+  #       - !ImportValue
+  #           Fn::Sub: ${vpc2securityGroupStackName}-vpc2SecurityGroupID
+Outputs:
+  vpc2publicInstance1DNS:
+    Description: DNS Name of VPC2 Public Instance1
+    Value: !GetAtt vpc2publicInstance1.PublicDnsName
+  # vpc2publicInstance2DNS:
+  #   Description: DNS Name of VPC2 Public Instance1
+  #   Value: !GetAtt vpc2publicInstance2.PublicDnsName
+  # vpc2publicInstance3DNS:
+  #   Description: DNS Name of VPC2 Public Instance1
+  #   Value: !GetAtt vpc2publicInstance3.PublicDnsName
