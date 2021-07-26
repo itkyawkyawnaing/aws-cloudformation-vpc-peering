@@ -1,6 +1,6 @@
 # AWS VPC Peering with AWS CloudFormation Multi-stack
 
-This lab is focusing on AWS CloudFormation (CFN) cross-stack scenarios design and to get familiar with AWS CloudFormation.
+This lab is focusing on AWS CloudFormation (CFN) cross-stack scenarios design and to get familiar with AWS CloudFormation Template.
 
 There are number of reasons might need to setup VPC peering connection between different VPC within same account or different Account with same region. 
 
@@ -15,13 +15,13 @@ There are number of reasons might need to setup VPC peering connection between d
 1. Create VPC1 with 192.168.0.0/16
 2. Create 3 x VPC1 Subnets
 3. Create 1 x IGW and add necessary routes
-4. Create Security group to permit TCP/22,TCP/443, TCP/80 & ICMP
+4. Create Security group to permit TCP/22,TCP/443,TCP/80 & ICMP
 
 ## Scenarios 2
 1. Create VPC1 with 172.16.0.0/16
 2. Create 3 x VPC1 Subnets
 3. Create 1 x IGW and add necessary routes
-4. Create Security group to permit TCP/22,TCP/443, TCP/80 & ICMP
+4. Create Security group to permit TCP/22,TCP/443,TCP/80 & ICMP
 
 ## Scenarios 3
 1. Create VPC Peering Connection
@@ -36,7 +36,7 @@ This will clone my git respository to your local directory.
 
 ## 2. VPC1 required following AWS CloudFormation templates.
 - [vpc1.yaml](./vpc1.yaml)
-- [vpc1-security-group] (./vpc1-security-group.yaml)
+- [vpc1-security-group](./vpc1-security-group.yaml)
 - [vpc1-instance](./vpc1-instance.yaml)
 
 > Suggect to create a project folder and run the following command in that directory.
@@ -51,7 +51,8 @@ aws cloudformation create-stack --stack-name vpc1 --template-body file://vpc1.ya
 ```bash
 aws cloudformation create-stack --stack-name vpc1-security-group --template-body file://vpc1-security-group.yaml
 ```
-### iii) Create Instance with AWS CloudFormation template "vpc1-instance.yaml". The template has prepared 3 instances for different purposed. However, Only one instance enought for VPC Peering and Internet Connection testing.
+### iii) Create Instance with AWS CloudFormation template "vpc1-instance.yaml". 
+The template has prepared 3 instances for different purposed. However, Only one instance enought for VPC Peering and Internet Connection testing.
 
 ```bash
 aws cloudformation create-stack --stack-name vpc1-instance --template-body file://vpc1-instance.yaml
@@ -74,31 +75,32 @@ aws cloudformation create-stack --stack-name vpc2 --template-body file://vpc2.ya
 ```bash
 aws cloudformation create-stack --stack-name vpc2-security-group --template-body file://vpc2-security-group.yaml
 ```
-### iii) Create Instance with AWS CloudFormation template "vpc2-instance.yaml". The template has prepared 3 instances for different purposed. However, Only one instance enought for VPC Peering and Internet Connection testing.
+### iii) Create Instance with AWS CloudFormation template "vpc2-instance.yaml". 
+The template has prepared 3 instances for different purposed. However, Only one instance enought for VPC Peering and Internet Connection testing.
 
 ```bash
 aws cloudformation create-stack --stack-name vpc2-instance --template-body file://vpc2-instance.yaml
 ```
-
-## 4. Validate resources that provisioned such us VPCs, Subnets, Internet Gateway, & Instances. The instances should able to go out internet to install updates, apt update and install is good example to try out `sudo apt-get update && apt-get install`.
+## 4. Verification 
+SSH into instance from VPC1 and VPC2. The instances should able to go out internet to install updates, apt update and install is good example to try out `sudo apt-get update && apt-get install`.
 
 ## 5. Part of the scenario 3 requirement required to create VPC Peering. Create VPC peering with AWS CloudFormation template "peering.yaml".
-
 ```bash
 aws cloudformation create-stack --stack-name peering --template-body file://peering.yaml
 ```
 ![header image](img/peering.png)
 
-## Congratulation !!! Should able to ping VPC1 instance to VPC2 instance like below the picture.
+## Congratulation !!! Should able to ping from VPC1 instance to VPC2 instance like below the picture.
 
 ![header image](img/ping.png)
 
-## Validate the AWS CloudFormation in Console. Should be sucessfully deployed without error.
+## AWS CloudFormation Template verification.
+Login to GUI Console and validate the template. Should be sucessfully deployed without error as below the picture.
 
 ![header image](img/cfn.png)
 
-## 6. Do not forget to destroy your enviroment after testing. Simply executing the following command to destroy all the AWS CloudFormation stacks.
-
+## 6. Clean-Up
+Do not forget to destroy your enviroment after testing. Simply executing the following command to destroy all the AWS CloudFormation stacks.
 ```bash
 aws cloudformation delete-stack --stack-name peering                                 
 aws cloudformation delete-stack --stack-name vpc2-instance
