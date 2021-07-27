@@ -32,14 +32,14 @@ Follow the steps to completed the tasks.
 ```bash
 git clone https://github.com/itkyawkyawnaing/aws-cloudformation-vpc-peering.git
 ```
-This will clone my git respository to your local directory.
+This will clone my git repository to your local directory.
 
 ## 2. VPC1 required following AWS CloudFormation templates
 - [vpc1.yaml](./vpc1.yaml)
 - [vpc1-security-group](./vpc1-security-group.yaml)
 - [vpc1-instance](./vpc1-instance.yaml)
 
-> Suggect to create a project folder and run the following command in that directory.
+> Suggest to create a project folder and run the following command in that directory.
 
 ### i) Create VPC1 with AWS CloudFormation template "vpc1.yaml"
 
@@ -52,7 +52,7 @@ aws cloudformation create-stack --stack-name vpc1 --template-body file://vpc1.ya
 aws cloudformation create-stack --stack-name vpc1-security-group --template-body file://vpc1-security-group.yaml
 ```
 ### iii) Create Instance with AWS CloudFormation template "vpc1-instance.yaml"
-The template has prepared 3 instances for different purposed. However, Only one instance enought for VPC Peering and Internet Connection Testing.
+The template has prepared 3 instances for different purposed. However, Only one instance enough for VPC Peering and Internet Connection Testing.
 
 ```bash
 aws cloudformation create-stack --stack-name vpc1-instance --template-body file://vpc1-instance.yaml
@@ -63,7 +63,7 @@ aws cloudformation create-stack --stack-name vpc1-instance --template-body file:
 - [vpc2-security-group](./vpc2-security-group.yaml)
 - [vpc2-instance](./vpc2-instance.yaml)
 
-> Suggect to create a project folder and run the following command in that directory.
+> Suggest to create a project folder and run the following command in that directory.
 
 ### i) Create VPC2 with AWS CloudFormation template "vpc2.yaml"
 
@@ -76,7 +76,7 @@ aws cloudformation create-stack --stack-name vpc2 --template-body file://vpc2.ya
 aws cloudformation create-stack --stack-name vpc2-security-group --template-body file://vpc2-security-group.yaml
 ```
 ### iii) Create Instance with AWS CloudFormation template "vpc2-instance.yaml"
-The template has prepared 3 instances for different purposed. However, Only one instance enought for VPC Peering and Internet Connection testing.
+The template has prepared 3 instances for different purposed. However, Only one instance enough for VPC Peering and Internet Connection testing.
 
 ```bash
 aws cloudformation create-stack --stack-name vpc2-instance --template-body file://vpc2-instance.yaml
@@ -84,7 +84,8 @@ aws cloudformation create-stack --stack-name vpc2-instance --template-body file:
 ## 4. Verification 
 SSH into instance from VPC1 and VPC2 with your key pair. The instances should able to go out internet to install updates, apt update and install is good example to try out `sudo apt-get update && apt-get install`.
 
-## 5. Part of the scenario 3 requirement required to create VPC Peering. Create VPC peering with AWS CloudFormation template "peering.yaml"
+## 5. VPC Peering
+Part of the scenario 3 required to create VPC Peering. Create VPC peering with AWS CloudFormation template "peering.yaml"
 ```bash
 aws cloudformation create-stack --stack-name peering --template-body file://peering.yaml
 ```
@@ -95,12 +96,12 @@ aws cloudformation create-stack --stack-name peering --template-body file://peer
 ![header image](img/ping.png)
 
 ## AWS CloudFormation Template Verification
-Login to GUI Console and validate the template. Should be sucessfully deployed without error as below the picture.
+Login to GUI Console and validate the template. Should be successfully deployed without error as below the picture.
 
 ![header image](img/cfn.png)
 
 ## 6. Clean-Up
-Do not forget to destroy your enviroment after testing. Simply executing the following command to destroy all the AWS CloudFormation stacks.
+Do not forget to destroy your environment after testing. Simply executing the following command to destroy all the AWS CloudFormation stacks.
 ```bash
 aws cloudformation delete-stack --stack-name peering                                 
 aws cloudformation delete-stack --stack-name vpc2-instance
@@ -110,7 +111,7 @@ aws cloudformation delete-stack --stack-name vpc1-instance
 aws cloudformation delete-stack --stack-name vpc1-security-group
 aws cloudformation delete-stack --stack-name vpc1               
 ```
-## 7 Future Reference
+## 7. Future Reference
 [VPC Peering Cost](https://aws.amazon.com/about-aws/whats-new/2021/05/amazon-vpc-announces-pricing-change-for-vpc-peering/) 
 
 I hope you enjoy the lab and thank you so much for your time.
